@@ -15,22 +15,22 @@ We wish to draw samples from
     p(a_1, a_2, c_1, c_2 \mid \chi_\mathrm{eff}, q, \mathrm{iso}),
 \end{equation}
 where $c_i \equiv \cos\theta_i$, the isotropic prior is
-$p(a_1,a_2,c_1,c_2) = U(a_1;[0,a_\max])\,U(a_2;[0,a_\max])\,U(c_1;[-1,1])\,U(c_2;[-1,1])$,
+$p(a_1,a_2,c_1,c_2) = U(a_1;[0,a_{\max}])\,U(a_2;[0,a_{\max}])\,U(c_1;[-1,1])\,U(c_2;[-1,1])$,
 and $\chi_\mathrm{eff} = (a_1 c_1 + q\,a_2 c_2)/(1+q)$.
 
 The sampling proceeds in three stages.
 
 \subsection*{Stage 1: Marginal distribution of $\chi_i = a_i c_i$}
 
-With $a\sim U[0,a_\max]$ and $c\sim U[-1,1]$ independent, let $\chi = ac$.
+With $a\sim U[0,a_{\max}]$ and $c\sim U[-1,1]$ independent, let $\chi = ac$.
 For fixed $a$, $p(\chi\mid a)=1/(2a)$ for $|\chi|<a$.
 Marginalising over $a$:
 \begin{equation}
-    p(\chi \mid \mathrm{iso}) = \int_{|\chi|}^{a_\max}\frac{da}{2a_\max\, a}
-    = \frac{1}{2a_\max}\ln\!\left(\frac{a_\max}{|\chi|}\right),
-    \qquad |\chi|<a_\max.
+    p(\chi \mid \mathrm{iso}) = \int_{|\chi|}^{a_{\max}}\frac{da}{2a_{\max}\, a}
+    = \frac{1}{2a_{\max}}\ln\!\left(\frac{a_{\max}}{|\chi|}\right),
+    \qquad |\chi|<a_{\max}.
 \end{equation}
-When $a_\max=1$ this reduces to $-\ln|\chi|/2$.
+When $a_{\max}=1$ this reduces to $-\ln|\chi|/2$.
 
 \subsection*{Stage 2: Sampling $(\chi_1,\chi_2)$ given $\chi_\mathrm{eff}$ and $q$}
 
@@ -57,24 +57,24 @@ sampling; $\chi_2$ is then determined.
 \subsection*{Stage 3: Sampling $(a_i, c_i)$ given $\chi_i$}
 
 For each $\chi_i$ obtained in Stage~2, we sample $c_i$ from its conditional
-distribution.  Given $\chi$ with $|\chi|<a_\max$, the spin magnitude must
-satisfy $a = \chi/c \leq a_\max$, so $|c| \in [|\chi|/a_\max,\,1]$ with the
+distribution.  Given $\chi$ with $|\chi|<a_{\max}$, the spin magnitude must
+satisfy $a = \chi/c \leq a_{\max}$, so $|c| \in [|\chi|/a_{\max},\,1]$ with the
 same sign as $\chi$.  The conditional density is
 \begin{equation}
-    p(c\mid\chi) = \frac{1}{|c|\,\ln(a_\max/|\chi|)},
-    \qquad |c|\in\bigl[|\chi|/a_\max,\,1\bigr],
+    p(c\mid\chi) = \frac{1}{|c|\,\ln(a_{\max}/|\chi|)},
+    \qquad |c|\in\bigl[|\chi|/a_{\max},\,1\bigr],
 \end{equation}
 and the corresponding CDF is
 \begin{equation}
-    P(c < \tau \mid \chi) = \frac{\ln\!\left(a_\max\,|\tau|/|\chi|\right)}
-                                  {\ln\!\left(a_\max/|\chi|\right)},
-    \qquad |\tau|\in\bigl[|\chi|/a_\max,\,1\bigr].
+    P(c < \tau \mid \chi) = \frac{\ln\!\left(a_{\max}\,|\tau|/|\chi|\right)}
+                                  {\ln\!\left(a_{\max}/|\chi|\right)},
+    \qquad |\tau|\in\bigl[|\chi|/a_{\max},\,1\bigr].
 \end{equation}
 Inverting with a uniform draw $u\sim U[0,1]$ gives
 \begin{equation}
-    |c| = |\chi|^{1-u}\,a_\max^{\,u-1}, \qquad a = |\chi|^{u}\,a_\max^{\,1-u},
+    |c| = |\chi|^{1-u}\,a_{\max}^{\,u-1}, \qquad a = |\chi|^{u}\,a_{\max}^{\,1-u},
 \end{equation}
-with $c$ carrying the same sign as $\chi$.  When $a_\max=1$ these reduce to
+with $c$ carrying the same sign as $\chi$.  When $a_{\max}=1$ these reduce to
 $|c|=|\chi|^{1-u}$ and $a=|\chi|^u$.
 
 \subsection*{Summary}
@@ -84,8 +84,8 @@ $|c|=|\chi|^{1-u}$ and $a=|\chi|^u$.
           $p(\chi_1\mid\chi_\mathrm{eff},q,\mathrm{iso})$.
     \item Compute $\chi_2 = \bigl[(1+q)\chi_\mathrm{eff}-\chi_1\bigr]/q$.
     \item For each $\chi_i$: draw $u_i\sim U[0,1]$, set
-          $c_i = \mathrm{sgn}(\chi_i)\,|\chi_i|^{1-u_i} a_\max^{\,u_i-1}$,
-          then $a_i = |\chi_i|^{u_i} a_\max^{\,1-u_i}$.
+          $c_i = \mathrm{sgn}(\chi_i)\,|\chi_i|^{1-u_i} a_{\max}^{\,u_i-1}$,
+          then $a_i = |\chi_i|^{u_i} a_{\max}^{\,1-u_i}$.
 \end{enumerate}
 
 \end{document}
