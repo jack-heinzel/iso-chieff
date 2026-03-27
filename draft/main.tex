@@ -14,9 +14,8 @@ We wish to draw samples from
 \begin{equation}
     p(a_1, a_2, c_1, c_2 \mid \chi_\mathrm{eff}, q, \mathrm{iso}),
 \end{equation}
-where $c_i \equiv \cos\theta_i$, the isotropic prior is
-$p(a_1,a_2,c_1,c_2) = U(a_1;[0,a_{\max}])\,U(a_2;[0,a_{\max}])\,U(c_1;[-1,1])\,U(c_2;[-1,1])$,
-and $\chi_\mathrm{eff} = (a_1 c_1 + q\,a_2 c_2)/(1+q)$.
+where $c_i \equiv \cos\theta_i$, the ``isotropic'' prior is
+uniform in spin magnitude between 0 and $a_{\max}$ and isotropic in tilts, e.g., uniform in $\cos(\theta) \sim U(-1,1)$. The inspiral effective aligned spin parameter is defined as $\chi_\mathrm{eff} = (a_1 c_1 + q\,a_2 c_2)/(1+q)$.
 
 The sampling proceeds in three stages.
 
