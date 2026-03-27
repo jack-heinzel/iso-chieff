@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(conda run:*)",
+      "Bash(pip show:*)",
+      "Bash(PYTHON=\"/c/Users/Jack Heinzel/.conda/envs/jax/python\"\n\"$PYTHON\" -m jupyter nbconvert --to notebook --execute \\\\\n  --ExecutePreprocessor.kernel_name=jax \\\\\n  --ExecutePreprocessor.timeout=300 \\\\\n  \"C:/Users/Jack Heinzel/Desktop/repositories/iso-chieff/code/validate_sampler.ipynb\" \\\\\n  --output /tmp/validate_out.ipynb 2>&1)",
+      "Bash(PYTHON=\"/c/Users/Jack Heinzel/.conda/envs/jax/python\"\n\"$PYTHON\" -m jupyter nbconvert --to notebook --execute \\\\\n  --ExecutePreprocessor.kernel_name=jax \\\\\n  --ExecutePreprocessor.timeout=300 \\\\\n  \"C:/Users/Jack Heinzel/Desktop/repositories/iso-chieff/code/validate_sampler.ipynb\" \\\\\n  --output /tmp/validate_out.ipynb 2>&1 | tail -40)"
+    ]
+  }
+}
