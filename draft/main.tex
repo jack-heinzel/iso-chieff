@@ -1,12 +1,58 @@
-\documentclass[12pt]{article}
-\usepackage{amsmath, amssymb}
-\usepackage[margin=1in]{geometry}
+\documentclass[%
+ reprint,
+ amsmath,amssymb,
+ aps,
+ onecolumn,
+ nofootinbib,nobibnotes,
+]{revtex4-2}
 
-\title{Sampling the Isotropic Spin Prior Conditional on $\chi_\mathrm{eff}$}
-\date{}
+% \bibliographystyle{apsrev4-1}
+
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{dcolumn}
+\usepackage{bm}
+\usepackage[dvipsnames, usenames]{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{acronym}
+\usepackage{physics}
+\usepackage{orcidlink}
+\usepackage{xspace}
+
+\graphicspath{{plots}{plots/posterior_samples}{plots/prior_samples}}
+
+\newcommand{\red}[1]{{\color{Red} #1}}
+\newcommand{\jh}[1]{{\color{orange}JH: #1}}
+\newcommand{\comment}[1]{}
+\newcommand{\Msun}{\ensuremath{M_{\odot}}}
+\newcommand{\PixelPop}{\textsc{PixelPop}\xspace}
+\newcommand{\heading}[1]{\textbf{\textit{#1}}}
+
+\newcommand{\ligo}{\affiliation{LIGO Laboratory, Massachusetts Institute of Technology, Cambridge, MA 02139, USA}}
+\renewcommand{\mit}{\affiliation{Kavli Institute for Astrophysics and Space Research and Department of Physics, Massachusetts Institute of Technology, Cambridge, MA 02139, USA}}
+
+\acrodef{GWTC-4}[GWTC-4]{fourth gravitational wave transient catalog}
+\acrodef{LVK}[LVK]{LIGO---Virgo---KAGRA collaborations}
+
+
 
 \begin{document}
+
+
+\title{Sampling the Isotropic Spin Prior Conditional on $\chi_\mathrm{eff}$}
+
+\author{Jack Heinzel\,\orcidlink{0000-0002-5794-821X}}
+\email{heinzelj@mit.edu}
+\ligo\mit
+
+\date{\today}
+
+% \begin{abstract}
+
+% \end{abstract}
+
 \maketitle
+
 
 \section*{Algorithm Description}
 
@@ -15,7 +61,10 @@ We wish to draw samples from
     p(a_1, a_2, c_1, c_2 \mid \chi_\mathrm{eff}, q, \mathrm{iso}),
 \end{equation}
 where $c_i \equiv \cos\theta_i$, the ``isotropic'' prior is
-uniform in spin magnitude between 0 and $a_{\max}$ and isotropic in tilts, e.g., uniform in $\cos(\theta) \sim U(-1,1)$. The inspiral effective aligned spin parameter is defined as $\chi_\mathrm{eff} = (a_1 c_1 + q\,a_2 c_2)/(1+q)$.
+uniform in spin magnitude between 0 and $a_{\max}$ and isotropic in tilts, e.g., uniform in $\cos(\theta) \sim U(-1,1)$. The inspiral effective aligned spin parameter is defined as 
+\begin{equation}
+    \chi_\mathrm{eff} = \frac{a_1 c_1 + q\,a_2 c_2}{1+q}.
+\end{equation}
 
 The sampling proceeds in three stages.
 
@@ -33,14 +82,16 @@ When $a_{\max}=1$ this reduces to $-\ln|\chi|/2$.
 
 \subsection*{Stage 2: Sampling $(\chi_1,\chi_2)$ given $\chi_\mathrm{eff}$ and $q$}
 
-Since $a_1,c_1$ are independent of $a_2,c_2$, the joint isotropic density
-factors as $p(\chi_1|\mathrm{iso})\,p(\chi_2|\mathrm{iso})$.
-The constraint $\chi_\mathrm{eff} = (\chi_1 + q\chi_2)/(1+q)$ fixes
+
+Bayes' theorem implies
 \begin{equation}
-    \chi_2 = \frac{(1+q)\chi_\mathrm{eff} - \chi_1}{q}.
+    p(\chi_1 \mid \chi_{\rm eff}, q, \mathrm{iso}) = \frac{p(\chi_1\mid\mathrm{iso}) p(\chi_{\rm eff} \mid\chi_1, q, \mathrm{iso})}{p(\chi_{\rm eff}\mid q, \mathrm{iso})}
 \end{equation}
-Changing variables from $(\chi_1,\chi_2)$ to $(\chi_1,\chi_\mathrm{eff})$
-introduces a Jacobian $(1+q)/q$, giving the marginal
+But we can reformulate the conditional density on $p(\chi_{\rm eff} \mid\chi_1, q, \mathrm{iso})$ by realizing the only degree of freedom in $\chi_{\rm eff}$ conditional on $\chi_1$ is $\chi_2$. Changing variables to
+\begin{equation}
+    \chi_2 = \frac{(1+q)\chi_\mathrm{eff} - \chi_1}{q} \implies p(\chi_{\rm eff} \mid\chi_1, q, \mathrm{iso}) = \frac{1+q}{q}p(\chi_2 \mid \chi_1, q, \mathrm{iso})
+\end{equation}
+which introduces the Jacobian $(1+q)/q$. We also can drop the conditional dependence of $\chi_2$ on $\chi_1$ since they are independent by construction, giving the marginal
 \begin{equation}
     p(\chi_1 \mid \chi_\mathrm{eff}, q, \mathrm{iso})
     = \frac{1+q}{q}
@@ -48,8 +99,8 @@ introduces a Jacobian $(1+q)/q$, giving the marginal
            {p(\chi_\mathrm{eff}\mid q,\mathrm{iso})},
 \end{equation}
 where $\chi_2$ on the right-hand side is the implied value above,
-and $p(\chi_\mathrm{eff}\mid q,\mathrm{iso})$ is the normalising constant
-(the convolution of the two single-spin marginals).
+and $p(\chi_\mathrm{eff}\mid q,\mathrm{iso})$ is the normalizing constant
+(the convolution of the two single-spin marginals, derived in Ref.~\cite{Callister:2021gxf}). 
 We sample $\chi_1$ from this one-dimensional distribution via inverse-CDF
 sampling; $\chi_2$ is then determined.
 
@@ -87,4 +138,5 @@ $|c|=|\chi|^{1-u}$ and $a=|\chi|^u$.
           then $a_i = |\chi_i|^{u_i} a_{\max}^{\,1-u_i}$.
 \end{enumerate}
 
+\bibliography{draft/references} 
 \end{document}
