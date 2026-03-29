@@ -92,42 +92,38 @@ def sample_c_given_chi(chi, u, amax=1.0):
 # ---------------------------------------------------------------------------
 # Batched sampler  (preferred — single JIT call over all chi_eff values)
 # ---------------------------------------------------------------------------
-
-@partial(jax.jit, static_argnames=("n_grid",))
-def sample_conditional_spins_batch(chi_eff_arr, q, key, amax=1.0, n_grid=1000):
+@partial(jax.jit, static_argnames=("n_grid","batch_size",))
+def sample_conditional_spins_batch(chi_eff_arr, q, key, amax=1.0, n_grid=1000, batch_size=10_000):
     """
-    Sample (a1, a2, c1, c2) for an array of chi_eff values in one JIT call.
-
-    All per-sample work (CDF grid construction, inversion, analytic spin draw)
-    is vmapped over the batch dimension, so there is no Python-level loop.
-
-    Parameters
-    ----------
-    chi_eff_arr : jax array, shape (N,)
-    q           : float
-    key         : jax.random.PRNGKey
-    amax        : float  (default 1.0)
-    n_grid      : int    CDF grid size (default 1000)
-
-    Returns
-    -------
-    a1, a2, c1, c2 : jax arrays, shape (N,)
+    Sample (a1, a2, c1, c2) using jax.lax.map to process the batch.
     """
     k1, k2, k3 = jax.random.split(key, 3)
     N = chi_eff_arr.shape[0]
 
+    # Pre-generate random numbers for the whole batch
     u_chi1 = jax.random.uniform(k1, shape=(N,))
     u_c1   = jax.random.uniform(k2, shape=(N,))
     u_c2   = jax.random.uniform(k3, shape=(N,))
 
-    def sample_one(chi_eff, u1, u2, u3):
+    # Define the single-sample function
+    # lax.map passes a single element (a tuple in this case)
+    def sample_one(args):
+        chi_eff, u1, u2, u3 = args
         chi1 = _sample_chi1_single(chi_eff, q, u1, amax, n_grid)
         chi2 = ((1.0 + q) * chi_eff - chi1) / q
         c1   = sample_c_given_chi(chi1, u2, amax)
         c2   = sample_c_given_chi(chi2, u3, amax)
-        return chi1 / c1, chi2 / c2, c1, c2
+        
+        # Guard against division by zero if c1 or c2 are 0
+        a1 = jnp.where(c1 != 0, chi1 / c1, 0.0)
+        a2 = jnp.where(c2 != 0, chi2 / c2, 0.0)
+        
+        return a1, a2, c1, c2
 
-    a1, a2, c1, c2 = jax.vmap(sample_one)(chi_eff_arr, u_chi1, u_c1, u_c2)
+    # Map over the stacked arrays
+    # lax.map will iterate over the 0th axis of the tuple elements
+    a1, a2, c1, c2 = jax.lax.map(sample_one, (chi_eff_arr, u_chi1, u_c1, u_c2), batch_size=batch_size)
+    
     return a1, a2, c1, c2
 
 
