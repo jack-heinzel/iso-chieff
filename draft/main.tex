@@ -54,7 +54,7 @@
 \maketitle
 
 
-\section*{Algorithm Description}
+\section{Algorithm Description}
 
 We wish to draw samples from
 \begin{equation}
@@ -68,7 +68,7 @@ uniform in spin magnitude between 0 and $a_{\max}$ and isotropic in tilts, e.g.,
 
 The sampling proceeds in three stages.
 
-\subsection*{Stage 1: Marginal distribution of $\chi_i = a_i c_i$}
+\subsection{Stage 1: Marginal distribution of $\chi_i = a_i c_i$}
 
 With $a\sim U[0,a_{\max}]$ and $c\sim U[-1,1]$ independent, let $\chi = ac$.
 For fixed $a$, $p(\chi\mid a)=1/(2a)$ for $|\chi|<a$.
@@ -80,7 +80,7 @@ Marginalising over $a$:
 \end{equation}
 When $a_{\max}=1$ this reduces to $-\ln|\chi|/2$.
 
-\subsection*{Stage 2: Sampling $(\chi_1,\chi_2)$ given $\chi_\mathrm{eff}$ and $q$}
+\subsection{Stage 2: Sampling $(\chi_1,\chi_2)$ given $\chi_\mathrm{eff}$ and $q$}
 
 
 Bayes' theorem implies
@@ -104,7 +104,7 @@ and $p(\chi_\mathrm{eff}\mid q,\mathrm{iso})$ is the normalizing constant
 We sample $\chi_1$ from this one-dimensional distribution via inverse-CDF
 sampling; $\chi_2$ is then determined.
 
-\subsection*{Stage 3: Sampling $(a_i, c_i)$ given $\chi_i$}
+\subsection{Stage 3: Sampling $(a_i, c_i)$ given $\chi_i$}
 
 For each $\chi_i$ obtained in Stage~2, we sample $c_i$ from its conditional
 distribution.  Given $\chi$ with $|\chi|<a_{\max}$, the spin magnitude must
@@ -127,7 +127,7 @@ Inverting with a uniform draw $u\sim U[0,1]$ gives
 with $c$ carrying the same sign as $\chi$.  When $a_{\max}=1$ these reduce to
 $|c|=|\chi|^{1-u}$ and $a=|\chi|^u$.
 
-\subsection*{Summary}
+\subsection{Summary}
 
 \begin{enumerate}
     \item Draw $u_1\sim U[0,1]$ and sample $\chi_1$ by inverting the CDF of
@@ -137,6 +137,8 @@ $|c|=|\chi|^{1-u}$ and $a=|\chi|^u$.
           $c_i = \mathrm{sgn}(\chi_i)\,|\chi_i|^{1-u_i} a_{\max}^{\,u_i-1}$,
           then $a_i = |\chi_i|^{u_i} a_{\max}^{\,1-u_i}$.
 \end{enumerate}
+
+\section{Some examples}
 
 \bibliography{draft/references} 
 \end{document}
